@@ -1,6 +1,8 @@
 # File for utility methods to keep main clean
 import time
 
+from matplotlib import pyplot
+from numpy import *
 from LineItem import *
 from Meta import *
 
@@ -52,11 +54,6 @@ def searchDB_NU(DB, molID, isoID, nuMin, nuMax):
 			results.append(DB[i])
 		else:
 			pass
-	print("{0} matches found in {1:.6f} seconds.\nSearch efficiency: {2:.2f} lines/s.".format(len(results),
-	                                                                                          getRunTime(startTime), (
-		                                                                                          len(
-			                                                                                          results) / getRunTime(
-			                                                                                          startTime))))
 	return results
 
 
@@ -70,6 +67,28 @@ def getColumns(ara, ParameterNames):
 		columns.append(tempCol)
 	return columns
 
+
+def getStickXY(TableName):
+	"""
+    Get X and Y for fine plotting of a stick spectrum.
+    Usage: X,Y = getStickXY(TableName).
+    """
+	cent, intens = getColumns(TableName, ('nu', 'sw'))
+	n = len(cent)
+	cent_ = zeros(n * 3)
+	intens_ = zeros(n * 3)
+	for i in range(n):
+		intens_[3 * i] = 0
+		intens_[3 * i + 1] = intens[i]
+		intens_[3 * i + 2] = 0
+		cent_[(3 * i):(3 * i + 3)] = cent[i]
+	return cent_, intens_
+
+
+def stickPlot(DB):
+	x, y = getStickXY(DB)
+	pyplot.plot(x, y)
+	pyplot.show()
 
 # Function for testing -- ignore
 def getFileLength(filename):

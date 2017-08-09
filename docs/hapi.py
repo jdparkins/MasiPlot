@@ -23,42 +23,21 @@ import json
 import os, os.path
 import re
 from os import listdir
-from numpy import array, zeros, setdiff1d, ndarray, arange
-from numpy import place, where, real, polyval
-from numpy import complex128, int64, float64, float32
+from numpy import zeros, array, zeros, setdiff1d, ndarray, arange
+from numpy import place, where, insert, real, polyval
+from numpy import complex128, complex64, int64, int32, float64, float32
 from numpy import sqrt, abs, exp, pi, log, sin, cos, tan
 from numpy import convolve
 from numpy import flipud
 from numpy.fft import fft, fftshift
 from numpy import linspace, floor
 from numpy import any, minimum, maximum
+from numpy import modf
 from numpy import sort as npsort
 from bisect import bisect
 # from collections import OrderedDict
 from warnings import warn, simplefilter
 import pydoc
-# import httplib
-# import urllib2
-import json
-import os
-import os.path
-import pydoc
-import re
-from bisect import bisect
-from os import listdir
-# from collections import OrderedDict
-from warnings import warn, simplefilter
-
-from numpy import any, minimum, maximum
-from numpy import array, zeros, setdiff1d, ndarray, arange
-from numpy import complex128, int64, float64, float32
-from numpy import convolve
-from numpy import flipud
-from numpy import linspace, floor
-from numpy import place, where, real, polyval
-from numpy import sort as npsort
-from numpy import sqrt, abs, exp, pi, log, sin, cos, tan
-from numpy.fft import fft, fftshift
 
 # Enable warning repetitions
 simplefilter('always', UserWarning)
@@ -1563,8 +1542,9 @@ def getRowObjectFromString(input_string, TableName):
 			RowObject.append((par_name, par_value, par_format))
 			pos += 1
 	return RowObject
-	# LOCAL_TABLE_CACHE[TableName]['data'][par_name] += par_value # or append()?
 
+
+# LOCAL_TABLE_CACHE[TableName]['data'][par_name] += par_value # or append()?
 
 # Conversion between OBJECT_FORMAT and STORAGE_FORMAT
 # This will substitute putTableToStorage and getTableFromStorage
@@ -4205,12 +4185,12 @@ References:
 [1] N.H. Ngo, D. Lisak, H. Tran, J.-M. Hartmann.
     An isolated line-shape model to go beyond the Voigt profile in 
     spectroscopic databases and radiative transfer codes.
-    JQSRT, Volume 129, November 2013, Pages 89–100
+    JQSRT, Volume 129, November 2013, Pages 89â€“100
     http://dx.doi.org/10.1016/j.jqsrt.2013.05.034
 
 [2] A. L. Laraia, R. R. Gamache, J. Lamouroux, I. E. Gordon, L. S. Rothman.
     Total internal partition sums to support planetary remote sensing.
-    Icarus, Volume 215, Issue 1, September 2011, Pages 391–400
+    Icarus, Volume 215, Issue 1, September 2011, Pages 391â€“400
     http://dx.doi.org/10.1016/j.icarus.2011.06.004
 
 _______________________________________________________________________
@@ -4384,7 +4364,7 @@ the column in 'H2O' table, and this column contains a transition wavenumber.
 The structure of a simple condition is as follows:
 
                     (OPERATION,ARG1,ARG2,...)
-                    
+
 Where OPERATION must be in a set of predefined operations (see below),
 and ARG1,ARG2 etc. are the arguments for this operation.
 Conditions can be nested, i.e. ARG can itself be a condition (see examples).
@@ -4415,7 +4395,7 @@ Search single match: 'SEARCH':                  ('SEARCH','\d \d \d','1 2 3 4')
 Search all matches:  'FINDALL':                 ('FINDALL','\d','1 2 3 4 5')
 Count within group:  'COUNT' :                  ('COUNT','local_iso_id')
 ---------------------------------------------------------------------------------
-   
+
 Let's create a query with more complex condition. Suppese that we are 
 interested in all lines between 3500 and 4000 with 1e-19 intensity cutoff.
 The query will look like this:
@@ -4567,15 +4547,15 @@ References:
 [1] N.H. Ngo, D. Lisak, H. Tran, J.-M. Hartmann.
     An isolated line-shape model to go beyond the Voigt profile in 
     spectroscopic databases and radiative transfer codes.
-    JQSRT, Volume 129, November 2013, Pages 89–100
+    JQSRT, Volume 129, November 2013, Pages 89â€“100
     http://dx.doi.org/10.1016/j.jqsrt.2013.05.034
 
 [2] A. L. Laraia, R. R. Gamache, J. Lamouroux, I. E. Gordon, L. S. Rothman.
     Total internal partition sums to support planetary remote sensing.
-    Icarus, Volume 215, Issue 1, September 2011, Pages 391–400
+    Icarus, Volume 215, Issue 1, September 2011, Pages 391â€“400
     http://dx.doi.org/10.1016/j.icarus.2011.06.004
 
-            
+
   ///////////////////////////
  /// USING LINE PROFILES ///
 ///////////////////////////
@@ -4626,7 +4606,7 @@ example of how to calculate HT profile on a numpy array.
     ww = arange(w0-Dw, w0+Dw, 0.01)  # GRID WITH THE STEP 0.01 
     l1 = PROFILE_HT(w0,GammaD,Gamma0,Gamma2,Delta0,Delta2,nuVC,eta,ww)[0]
     # now l1 contains values of HT profile calculates on the grid ww
-    
+
 On additional information about parameters see getHelp(PROFILE_HT).
 
 It worth noting that PROFILE_HT returns 2 entities: real and imaginary part
@@ -4768,7 +4748,7 @@ we'll make some notes about the usage of the correspondent parameter.
 
 
 SourceTables:     (required parameter)
-   
+
   List of source tables to take line-by-line data from.
   NOTE: User must provide at least one table in the list.
 
@@ -4948,7 +4928,7 @@ To get a description of each instrumental function we can use getHelp():
   DIFFRACTION : SLIT_DIFFRACTION
   MICHELSON   : SLIT_MICHELSON
   DISPERSION/LORENTZ : SLIT_DISPERSION
-  
+
 For instance,
 >>> getHelp(SLIT_MICHELSON)
 ... will give a datailed info about Michelson's instrumental function.
@@ -4959,7 +4939,7 @@ with one of supplied instrumental (slit) functions. The folowing
 parameters of this function are provided:
 
 Wavenumber     (required parameter)
-  
+
   Array of wavenumbers in high-resolution input spectrum.
   Deprecated name is Omega.
 
@@ -5045,7 +5025,7 @@ Prerequisites:
           sudo pip install numpy (under Linux and Mac)
           pip install numpy (under Windows)
        Or by the link http://www.numpy.org/
-       
+
 As an option, user can download one of the many scientific Python
 distributions, such as Anaconda, Canopy etc...
 
@@ -7577,7 +7557,7 @@ I = 2
 TIPS_GSI_HASH[(M, I)] = __FloatType__(0.)
 TIPS_ISO_HASH[(M, I)] = float32([0.])
 
-#  --------------- HСl 15: M = 15, I = 1 --------------------
+#  --------------- HÐ¡l 15: M = 15, I = 1 --------------------
 M = 15
 I = 1
 TIPS_GSI_HASH[(M, I)] = __FloatType__(8.)
@@ -7607,7 +7587,7 @@ TIPS_ISO_HASH[(M, I)] = float32([0.34775E+02, 0.48060E+02, 0.61370E+02,
                                  0.20910E+04, 0.21183E+04, 0.21458E+04, 0.21735E+04, 0.22014E+04,
                                  0.22295E+04])
 
-#  --------------- HСl 17: M = 15, I = 2 ---------------------
+#  --------------- HÐ¡l 17: M = 15, I = 2 ---------------------
 M = 15
 I = 2
 TIPS_GSI_HASH[(M, I)] = __FloatType__(8.)
@@ -7637,13 +7617,13 @@ TIPS_ISO_HASH[(M, I)] = float32([0.34823E+02, 0.48128E+02, 0.61458E+02,
                                  0.20948E+04, 0.21222E+04, 0.21498E+04, 0.21775E+04, 0.22055E+04,
                                  0.22337E+04])
 
-#  --------------- HСl 25: M = 15, I = 3 --------------------- not in TIPS-2011
+#  --------------- HÐ¡l 25: M = 15, I = 3 --------------------- not in TIPS-2011
 M = 15
 I = 3
 TIPS_GSI_HASH[(M, I)] = __FloatType__(0.)
 TIPS_ISO_HASH[(M, I)] = float32([0.])
 
-#  --------------- HСl 27: M = 15, I = 4 --------------------- not in TIPS-2011
+#  --------------- HÐ¡l 27: M = 15, I = 4 --------------------- not in TIPS-2011
 M = 15
 I = 4
 TIPS_GSI_HASH[(M, I)] = __FloatType__(0.)
@@ -9629,7 +9609,7 @@ def partitionSum(M, I, T, step=None):
         Reference:
             A. L. Laraia, R. R. Gamache, J. Lamouroux, I. E. Gordon, L. S. Rothman.
             Total internal partition sums to support planetary remote sensing.
-            Icarus, Volume 215, Issue 1, September 2011, Pages 391–400
+            Icarus, Volume 215, Issue 1, September 2011, Pages 391â€“400
             http://dx.doi.org/10.1016/j.icarus.2011.06.004
 
         Output depends on a structure of input parameter T so that:
@@ -9897,7 +9877,7 @@ def pcqsdhc(sg0, GamD, Gam0, Gam2, Shift0, Shift2, anuVC, eta, sg):
 	#      Reference:
 	#      H. Tran, N.H. Ngo, J.-M. Hartmann.
 	#      Efficient computation of some speed-dependent isolated line profiles.
-	#      JQSRT, Volume 129, November 2013, Pages 199–203
+	#      JQSRT, Volume 129, November 2013, Pages 199â€“203
 	#      http://dx.doi.org/10.1016/j.jqsrt.2013.06.015
 	#
 	#      Input/Output Parameters of Routine (Arguments or Common)
@@ -10117,16 +10097,16 @@ def PROFILE_HT(sg0, GamD, Gam0, Gam2, Shift0, Shift2, anuVC, eta, sg):
     #      1) N.H. Ngo, D. Lisak, H. Tran, J.-M. Hartmann.
     #         An isolated line-shape model to go beyond the Voigt profile in
     #         spectroscopic databases and radiative transfer codes.
-    #         JQSRT, Volume 129, November 2013, Pages 89–100
+    #         JQSRT, Volume 129, November 2013, Pages 89â€“100
     #         http://dx.doi.org/10.1016/j.jqsrt.2013.05.034
     #
     #      2) H. Tran, N.H. Ngo, J.-M. Hartmann.
     #         Efficient computation of some speed-dependent isolated line profiles.
-    #         JQSRT, Volume 129, November 2013, Pages 199–203
+    #         JQSRT, Volume 129, November 2013, Pages 199â€“203
     #         http://dx.doi.org/10.1016/j.jqsrt.2013.06.015
     #
     #      3) H. Tran, N.H. Ngo, J.-M. Hartmann.
-    #         Erratum to “Efficient computation of some speed-dependent isolated line profiles”.
+    #         Erratum to â€œEfficient computation of some speed-dependent isolated line profilesâ€.
     #         JQSRT, Volume 134, February 2014, Pages 104
     #         http://dx.doi.org/10.1016/j.jqsrt.2013.10.015
     #
@@ -10512,7 +10492,7 @@ def absorptionCoefficient_HT(Components=None, SourceTables=None, partitionFuncti
 	else:
 		factor = volumeConcentration(p, T)
 
-		# setup the default empty environment dependence function
+	# setup the default empty environment dependence function
 	if not EnvDependences:
 		EnvDependences = lambda ENV, LINE: {}
 	Env = Environment.copy()
@@ -10738,8 +10718,8 @@ def absorptionCoefficient_HT(Components=None, SourceTables=None, partitionFuncti
 			Xsect[BoundIndexLower:BoundIndexUpper] += factor / NATURAL_ABUNDANCES[(MoleculeNumberDB, IsoNumberDB)] * \
 			                                          ABUNDANCES[(MoleculeNumberDB, IsoNumberDB)] * \
 			                                          LineIntensity * lineshape_vals
-			# print(LineCenterDB,GammaD,Gamma0,Gamma2,Shift0,sum(lineshape_vals),sum(Xsect))
-			# raise Exception
+		# print(LineCenterDB,GammaD,Gamma0,Gamma2,Shift0,sum(lineshape_vals),sum(Xsect))
+		# raise Exception
 
 	if File: save_to_file(File, Format, Omegas, Xsect)
 	return Omegas, Xsect
@@ -10858,7 +10838,7 @@ def absorptionCoefficient_SDVoigt(Components=None, SourceTables=None, partitionF
 	else:
 		factor = volumeConcentration(p, T)
 
-		# setup the default empty environment dependence function
+	# setup the default empty environment dependence function
 	if not EnvDependences:
 		EnvDependences = lambda ENV, LINE: {}
 	Env = Environment.copy()
@@ -10983,7 +10963,7 @@ def absorptionCoefficient_SDVoigt(Components=None, SourceTables=None, partitionF
 				Gamma2 += abun * CustomEnvDependences.get(SD_name,  # default ->
 				                                          SDDB * p / pref) * Gamma0DB
 
-				#   get final wing of the line according to Gamma0, OmegaWingHW and OmegaWing
+			# get final wing of the line according to Gamma0, OmegaWingHW and OmegaWing
 			# XXX min or max?
 			OmegaWingF = max(OmegaWing, OmegaWingHW * Gamma0, OmegaWingHW * GammaD)
 
@@ -11006,8 +10986,8 @@ def absorptionCoefficient_SDVoigt(Components=None, SourceTables=None, partitionF
 			Xsect[BoundIndexLower:BoundIndexUpper] += factor / NATURAL_ABUNDANCES[(MoleculeNumberDB, IsoNumberDB)] * \
 			                                          ABUNDANCES[(MoleculeNumberDB, IsoNumberDB)] * \
 			                                          LineIntensity * lineshape_vals
-			# print(LineCenterDB,GammaD,Gamma0,Gamma2,Shift0,sum(lineshape_vals),sum(Xsect))
-			# raise Exception
+		# print(LineCenterDB,GammaD,Gamma0,Gamma2,Shift0,sum(lineshape_vals),sum(Xsect))
+		# raise Exception
 
 	if File: save_to_file(File, Format, Omegas, Xsect)
 	return Omegas, Xsect
@@ -11124,7 +11104,7 @@ def absorptionCoefficient_Voigt(Components=None, SourceTables=None, partitionFun
 	else:
 		factor = volumeConcentration(p, T)
 
-		# setup the default empty environment dependence function
+	# setup the default empty environment dependence function
 	if not EnvDependences:
 		EnvDependences = lambda ENV, LINE: {}
 	Env = Environment.copy()
@@ -11377,7 +11357,7 @@ def absorptionCoefficient_Lorentz(Components=None, SourceTables=None, partitionF
 	else:
 		factor = volumeConcentration(p, T)
 
-		# setup the default empty environment dependence function
+	# setup the default empty environment dependence function
 	if not EnvDependences:
 		EnvDependences = lambda ENV, LINE: {}
 	Env = Environment.copy()
@@ -11491,8 +11471,8 @@ def absorptionCoefficient_Lorentz(Components=None, SourceTables=None, partitionF
 			OmegaWingF = max(OmegaWing, OmegaWingHW * Gamma0)
 
 			#   shift coefficient
-			# Shift0 = Shift0DB*p/pref \
- \
+			# Shift0 = Shift0DB*p/pref
+
 			# XXX other parameter (such as Delta0, Delta2, anuVC etc.) will be included in HTP version
 
 			# PROFILE_VOIGT(sg0,GamD,Gam0,sg)
@@ -11634,7 +11614,7 @@ def absorptionCoefficient_Doppler(Components=None, SourceTables=None, partitionF
 	else:
 		factor = volumeConcentration(p, T)
 
-		# SourceTables contain multiple tables
+	# SourceTables contain multiple tables
 	for TableName in SourceTables:
 
 		# get line centers
@@ -11923,8 +11903,8 @@ read_xsect = read_hotw
 def SLIT_RECTANGULAR(x, g):
 	"""
     Instrumental (slit) function.
-    B(x) = 1/γ , if |x| ≤ γ/2 & B(x) = 0, if |x| > γ/2,
-    where γ is a slit width or the instrumental resolution.
+    B(x) = 1/Î³ , if |x| â‰¤ Î³/2 & B(x) = 0, if |x| > Î³/2,
+    where Î³ is a slit width or the instrumental resolution.
     """
 	index_inner = abs(x) <= g / 2
 	index_outer = ~index_inner
@@ -11938,8 +11918,8 @@ def SLIT_RECTANGULAR(x, g):
 def SLIT_TRIANGULAR(x, g):
 	"""
     Instrumental (slit) function.
-    B(x) = 1/γ*(1-|x|/γ), if |x| ≤ γ & B(x) = 0, if |x| > γ,
-    where γ is the line width equal to the half base of the triangle.
+    B(x) = 1/Î³*(1-|x|/Î³), if |x| â‰¤ Î³ & B(x) = 0, if |x| > Î³,
+    where Î³ is the line width equal to the half base of the triangle.
     """
 	index_inner = abs(x) <= g
 	index_outer = ~index_inner
@@ -11953,8 +11933,8 @@ def SLIT_TRIANGULAR(x, g):
 def SLIT_GAUSSIAN(x, g):
 	"""
     Instrumental (slit) function.
-    B(x) = sqrt(ln(2)/pi)/γ*exp(-ln(2)*(x/γ)**2),
-    where γ/2 is a gaussian half-width at half-maximum.
+    B(x) = sqrt(ln(2)/pi)/Î³*exp(-ln(2)*(x/Î³)**2),
+    where Î³/2 is a gaussian half-width at half-maximum.
     """
 	g /= 2
 	return sqrt(log(2)) / (sqrt(pi) * g) * exp(-log(2) * (x / g) ** 2)
@@ -11964,8 +11944,8 @@ def SLIT_GAUSSIAN(x, g):
 def SLIT_DISPERSION(x, g):
 	"""
     Instrumental (slit) function.
-    B(x) = γ/pi/(x**2+γ**2),
-    where γ/2 is a lorentzian half-width at half-maximum.
+    B(x) = Î³/pi/(x**2+Î³**2),
+    where Î³/2 is a lorentzian half-width at half-maximum.
     """
 	g /= 2
 	return g / pi / (x ** 2 + g ** 2)
@@ -11997,8 +11977,8 @@ def SLIT_DIFFRACTION(x, g):
 def SLIT_MICHELSON(x, g):
 	"""
     Instrumental (slit) function.
-    B(x) = 2/γ*sin(2pi*x/γ)/(2pi*x/γ) if x!=0 else 1,
-    where 1/γ is the maximum optical path difference.
+    B(x) = 2/Î³*sin(2pi*x/Î³)/(2pi*x/Î³) if x!=0 else 1,
+    where 1/Î³ is the maximum optical path difference.
     """
 	y = zeros(len(x))
 	index_zero = x == 0
@@ -12017,7 +11997,7 @@ def convolveSpectrum(Omega, CrossSection, Resolution=0.1, AF_wing=10.,
     INPUT PARAMETERS:
         Wavenumber/Omega:    wavenumber grid                     (required)
         CrossSection:  high-res cross section calculated on grid (required)
-        Resolution:    instrumental resolution γ                 (optional)
+        Resolution:    instrumental resolution Î³                 (optional)
         AF_wing:       instrumental function wing                (optional)
         SlitFunction:  instrumental function for low-res spectra calculation (optional)
     OUTPUT PARAMETERS:
@@ -12030,7 +12010,7 @@ def convolveSpectrum(Omega, CrossSection, Resolution=0.1, AF_wing=10.,
     ---
     DESCRIPTION:
         Produce a simulation of experimental spectrum via the convolution
-        of a “dry” spectrum with an instrumental function.
+        of a â€œdryâ€ spectrum with an instrumental function.
         Instrumental function is provided as a parameter and
         is calculated in a grid with the width=AF_wing and step=Resolution.
     ---
