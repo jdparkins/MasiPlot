@@ -2,8 +2,11 @@
 import time
 
 from matplotlib import pyplot
-from numpy import *
+import matplotlib
+from numpy import zeros
 from LineItem import *
+import sympy
+from sympy import abc
 from Meta import *
 
 
@@ -85,10 +88,30 @@ def getStickXY(TableName):
 	return cent_, intens_
 
 
+# Generate stick plot for intensity vs wavenumber
 def stickPlot(DB):
+	printName = MOLECULE_NUMBER[DB[0][0]]["printName"]
 	x, y = getStickXY(DB)
-	pyplot.plot(x, y)
+	nuMin = x[0]
+	nuMax = x[len(x) - 1]
+	plt = pyplot.plot(x, y)
+	pyplot.title(r"STICK PLOT FOR {0}: {1:.0e} < $\nu$ < {2:.0e}".format(printName, nuMin, nuMax))
+	pyplot.xlabel(r'WAVENUMBER ($\nu$) [cm${-1}$]')
+	pyplot.ylabel(r'TRANSITION INTENSITY (sw) [$\frac{cm^{-1}}{molec\ cm^{-2}}$]')
 	pyplot.show()
+
+
+# Convert array of wavenumbers to wavelengths in micrometers
+def convertToLambda(ara):
+	lambdaList = []
+	for i in range(0, len(ara)):
+		lambdaList.insert(i, 10000 / ara[i])
+	return lambdaList
+
+
+# Generate stick plot for line survey of linestrength vs wavelength
+def lineSurvey(DB):
+	pass
 
 # Function for testing -- ignore
 def getFileLength(filename):

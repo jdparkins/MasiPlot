@@ -27,3 +27,10 @@ MOLECULES = {
 		"Imax": 3
 	}
 }
+
+MOLECULE_NUMBER = {
+	7: {
+		"name": "O2",
+		"printName": "$O_2$"
+	}
+}
