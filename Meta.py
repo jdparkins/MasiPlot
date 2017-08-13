@@ -37,5 +37,10 @@ MOLECULE_NUMBER = {
 	7: {
 		"name": "O2",
 		"printName": "$O_2$"
+	},
+
+	20: {
+		"name": "H2CO",
+		"printName": "$H_2CO$"
 	}
 }
