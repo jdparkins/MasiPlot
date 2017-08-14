@@ -5,6 +5,7 @@ from Utils import *
 LOCAL_DB = readDB()
 
 testDB = searchDB_ID(LOCAL_DB, 1, 1)
+
 stickPlot(testDB)
 
 

@@ -1,7 +1,7 @@
 # File for utility methods to keep main clean
 import time
 
-from matplotlib import pyplot
+from matplotlib import pyplot, ticker
 import matplotlib
 from numpy import zeros
 from LineItem import *
@@ -90,14 +90,17 @@ def getStickXY(TableName):
 
 # Generate stick plot for intensity vs wavenumber
 def stickPlot(DB):
-	printName = MOLECULE_NUMBER[DB[0][0]]["printName"]
+	printName = MOLECULE_NUMBER[DB[0][0]]["formula"]
+	fig, ax = pyplot.subplots()
 	x, y = getStickXY(DB)
 	nuMin = x[0]
 	nuMax = x[len(x) - 1]
-	plt = pyplot.plot(x, y)
-	pyplot.title(r"STICK PLOT FOR {0}: {1:.0e} < $\nu$ < {2:.0e}".format(printName, nuMin, nuMax))
+	pyplot.plot(x, y)
+	pyplot.title(r"STICK PLOT FOR {0}: {1:.0f} < $\nu$ < {2:.0f}".format(printName, nuMin, nuMax))
 	pyplot.xlabel(r'WAVENUMBER ($\nu$) [cm${-1}$]')
+	pyplot.gca().xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
 	pyplot.ylabel(r'TRANSITION INTENSITY (sw) [$\frac{cm^{-1}}{molec\ cm^{-2}}$]')
+	pyplot.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.0e'))
 	pyplot.show()
 
 
@@ -112,6 +115,7 @@ def convertToLambda(ara):
 # Generate stick plot for line survey of linestrength vs wavelength
 def lineSurvey(DB):
 	pass
+
 
 # Function for testing -- ignore
 def getFileLength(filename):
@@ -131,7 +135,7 @@ def printArray(ara):
 		print(ara[i])
 
 
-# Method to split file lines into tokenized strings
+# Split file lines into tokenized strings
 def splitLine(line):
 	tokens = line.split()
 	for i in range(0, len(tokens)):
@@ -139,6 +143,39 @@ def splitLine(line):
 	return tokens
 
 
-# Method to generate LineItem from splitLine()
+# Generate LineItem from splitLine()
 def generateLineItem(ara):
 	return LineItem(ara[0], ara[1], ara[2], ara[3])
+
+
+# Print query to a file
+def printToFile(ara, filename):
+	fileOut = open("./data/" + filename + ".txt", "w")
+	for i in range(0, len(ara)):
+		for j in range(0, 4):
+			fileOut.write("%s " % ara[i][j])
+		fileOut.write("\n")
+
+
+# Read small test database for testing
+def readTest():
+	results = []
+	with open("./data/CO_NU2195-2220.txt", "r") as fileIn:
+		for line in fileIn:
+			results.append(generateLineItem(splitLine(line.strip())))
+	return results
+
+
+# Break large DB into smaller DB by HITRAN molecule ID
+def createSubDB(originalDB, molec_id):
+	results = searchDB_ID(originalDB, molec_id, 1)
+	printToFile(results, MOLECULE_NUMBER[molec_id]["formula"])
+
+
+# Read specific file
+def readFile(filename):
+	results = []
+	with open("./data/" + filename, "r") as fileIn:
+		for line in fileIn:
+			results.append(generateLineItem(splitLine(line.strip())))
+	return results
