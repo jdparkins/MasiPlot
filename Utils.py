@@ -1,14 +1,12 @@
 # File for utility methods to keep main clean
 import time
-
-from matplotlib import pyplot, ticker
-import matplotlib
-from numpy import zeros
 from LineItem import *
-import sympy
-from sympy import abc
 from Meta import *
 
+
+# -----------------------------
+# ---------- FILE IO ----------
+# -----------------------------
 
 # Initial DB read and import to array LOCAL_DB
 def readDB():
@@ -21,16 +19,33 @@ def readDB():
 	return results
 
 
-# Utility function used for fast testing of new methods -- ignore
-def readFastDB():
+# Read specific file
+def readFile(filename):
 	results = []
-	startTime = time.time()
-	with open("./data/SimpleDB.out", "r") as fileIn:
-		for i in range(0, 100):
-			line = fileIn.__next__()
+	with open("./data/" + filename, "r") as fileIn:
+		for line in fileIn:
 			results.append(generateLineItem(splitLine(line.strip())))
 	return results
 
+
+# Print query to a file
+def printToFile(ara, filename):
+	fileOut = open("./data/" + filename + ".txt", "w")
+	for i in range(0, len(ara)):
+		for j in range(0, 4):
+			fileOut.write("%s " % ara[i][j])
+		fileOut.write("\n")
+
+
+# Break large DB into smaller DB by HITRAN molecule ID
+def createSubDB(originalDB, molec_id):
+	results = searchDB_ID(originalDB, molec_id, 1)
+	printToFile(results, MOLECULE_NUMBER[molec_id]["formula"])
+
+
+# -----------------------------
+# ---------- QUERIES ----------
+# -----------------------------
 
 # Search LOCAL_DB by molec_id and local_iso_id
 def searchDB_ID(DB, M, I):
@@ -60,74 +75,9 @@ def searchDB_NU(DB, molID, isoID, nuMin, nuMax):
 	return results
 
 
-# Fetches specified columns of array -- used to pick data for plotting
-def getColumns(ara, ParameterNames):
-	columns = []
-	for par_name in ParameterNames:
-		tempCol = []
-		for i in range(0, len(ara)):
-			tempCol.append(ara[i][PARAMETERS[par_name]])
-		columns.append(tempCol)
-	return columns
-
-
-def getStickXY(TableName):
-	"""
-    Get X and Y for fine plotting of a stick spectrum.
-    Usage: X,Y = getStickXY(TableName).
-    """
-	cent, intens = getColumns(TableName, ('nu', 'sw'))
-	n = len(cent)
-	cent_ = zeros(n * 3)
-	intens_ = zeros(n * 3)
-	for i in range(n):
-		intens_[3 * i] = 0
-		intens_[3 * i + 1] = intens[i]
-		intens_[3 * i + 2] = 0
-		cent_[(3 * i):(3 * i + 3)] = cent[i]
-	return cent_, intens_
-
-
-# Generate stick plot for intensity vs wavenumber
-def stickPlot(DB):
-	printName = MOLECULE_NUMBER[DB[0][0]]["formula"]
-	fig, ax = pyplot.subplots()
-	x, y = getStickXY(DB)
-	nuMin = x[0]
-	nuMax = x[len(x) - 1]
-	pyplot.plot(x, y)
-	pyplot.title(r"STICK PLOT FOR {0}: {1:.0f} < $\nu$ < {2:.0f}".format(printName, nuMin, nuMax))
-	pyplot.xlabel(r'WAVENUMBER ($\nu$) [cm${-1}$]')
-	pyplot.gca().xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
-	pyplot.ylabel(r'TRANSITION INTENSITY (sw) [$\frac{cm^{-1}}{molec\ cm^{-2}}$]')
-	pyplot.gca().yaxis.set_major_formatter(ticker.FormatStrFormatter('%.0e'))
-	pyplot.show()
-
-
-# Convert array of wavenumbers to wavelengths in micrometers
-def convertToLambda(ara):
-	lambdaList = []
-	for i in range(0, len(ara)):
-		lambdaList.insert(i, 10000 / ara[i])
-	return lambdaList
-
-
-# Generate stick plot for line survey of linestrength vs wavelength
-def lineSurvey(DB):
-	pass
-
-
-# Function for testing -- ignore
-def getFileLength(filename):
-	with open("./data/" + filename, "r") as fileIn:
-		content = fileIn.readlines()
-	return len(content)
-
-
-# Function for testing and analysis -- ignore
-def getRunTime(startTime):
-	return float((time.time() - startTime))
-
+# ---------------------------------------
+# ---------- DATA MANIPULATION ----------
+# ---------------------------------------
 
 # Quick and dirty array printer
 def printArray(ara):
@@ -148,13 +98,29 @@ def generateLineItem(ara):
 	return LineItem(ara[0], ara[1], ara[2], ara[3])
 
 
-# Print query to a file
-def printToFile(ara, filename):
-	fileOut = open("./data/" + filename + ".txt", "w")
-	for i in range(0, len(ara)):
-		for j in range(0, 4):
-			fileOut.write("%s " % ara[i][j])
-		fileOut.write("\n")
+# Fetch specified columns of array as individual lists
+def getColumns(ara, ParameterNames):
+	columns = []
+	for par_name in ParameterNames:
+		tempCol = []
+		for i in range(0, len(ara)):
+			tempCol.append(ara[i][PARAMETERS[par_name]])
+		columns.append(tempCol)
+	return columns
+
+
+# -----------------------------
+# ---------- TESTING ----------
+# -----------------------------
+
+# Utility function used for fast testing of new methods -- ignore
+def readNLines(n, filename):
+	results = []
+	with open("./data/" + filename, "r") as fileIn:
+		for i in range(0, n):
+			line = fileIn.__next__()
+			results.append(generateLineItem(splitLine(line.strip())))
+	return results
 
 
 # Read small test database for testing
@@ -166,16 +132,13 @@ def readTest():
 	return results
 
 
-# Break large DB into smaller DB by HITRAN molecule ID
-def createSubDB(originalDB, molec_id):
-	results = searchDB_ID(originalDB, molec_id, 1)
-	printToFile(results, MOLECULE_NUMBER[molec_id]["formula"])
-
-
-# Read specific file
-def readFile(filename):
-	results = []
+# Function for testing -- ignore
+def getFileLength(filename):
 	with open("./data/" + filename, "r") as fileIn:
-		for line in fileIn:
-			results.append(generateLineItem(splitLine(line.strip())))
-	return results
+		content = fileIn.readlines()
+	return len(content)
+
+
+# Function for testing and analysis -- ignore
+def getRunTime(startTime):
+	return float((time.time() - startTime))
