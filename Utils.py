@@ -1,5 +1,6 @@
 # File for utility methods to keep main clean
 import time
+
 from LineItem import *
 from Meta import *
 
@@ -41,6 +42,15 @@ def printToFile(ara, filename):
 def createSubDB(originalDB, molec_id):
 	results = searchDB_ID(originalDB, molec_id, 1)
 	printToFile(results, MOLECULE_NUMBER[molec_id]["formula"])
+	print("{0}:{1} successfully added".format(molec_id, MOLECULE_NUMBER[molec_id]['formula']))
+
+
+# Create sub DB for all molecule species most common isotopes (i.e. (I, 1))
+def fetchAllMolecules():
+	baseDB = readDB()
+	print("Base DB read.")
+	for key in MOLECULE_NUMBER:
+		createSubDB(baseDB, key)
 
 
 # -----------------------------
@@ -62,13 +72,13 @@ def searchDB_ID(DB, M, I):
 
 
 # Expanded search to cover nu range
-def searchDB_NU(DB, molID, isoID, nuMin, nuMax):
+def searchDB_NU(DB, nuMin, nuMax):
 	startTime = time.time()
 	lineCount = 1
 	lineTotal = len(DB)
 	results = []
 	for i in range(0, lineTotal):
-		if DB[i][0] == molID and DB[i][1] == isoID and nuMin < DB[i][2] < nuMax:
+		if nuMin < DB[i][2] < nuMax:
 			results.append(DB[i])
 		else:
 			pass
@@ -102,10 +112,14 @@ def generateLineItem(ara):
 def getColumns(ara, ParameterNames):
 	columns = []
 	for par_name in ParameterNames:
-		tempCol = []
-		for i in range(0, len(ara)):
-			tempCol.append(ara[i][PARAMETERS[par_name]])
-		columns.append(tempCol)
+		if par_name in PARAMETERS.keys():
+			tempCol = []
+			for i in range(0, len(ara)):
+				tempCol.append(ara[i][PARAMETERS[par_name]])
+			columns.append(tempCol)
+		else:
+			print("{0} is an invalid parameter.".format(par_name))
+			pass
 	return columns
 
 

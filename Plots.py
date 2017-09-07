@@ -1,8 +1,8 @@
-# File to contain all functions pertaining to generating plots
+# All plot generating functions for testing -- Live methods held in matplotlibwidget.py
 
-from matplotlib import pyplot as plt, ticker
 import numpy as np
-from Meta import *
+from matplotlib import pyplot as plt, ticker
+
 from Utils import *
 
 
@@ -33,10 +33,7 @@ def lineSurvey(table, cutoff):
 	ax = fig.add_subplot(1, 1, 1)
 	ax.set_yscale('log')
 	plt.plot(nu, S)
-	mean_nu = np.mean(nu)
-	mean_S = np.mean(S)
 	std_nu = np.std(nu)
-	std_S = np.std(S)
 	# Scale to x +- 0.1 sigma, y from 0 to max sw + 0.1 sigma
 	plt.axis([min(nu) - 0.1 * std_nu, max(nu) + 0.1 * std_nu, cutoff, 2 * max(S)])
 	plt.title(r"{0}: {1:.0f} < $\nu$ < {2:.0f}".format(printName, min(nu), max(nu)))
