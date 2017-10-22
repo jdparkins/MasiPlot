@@ -6,8 +6,9 @@ PARAMETERS = {
 	"molec_id": 0,
 	"local_iso_id": 1,
 	"nu": 2,
-	"sw": 3,
-	"s" : 3
+	"s": 3,
+	"elower": 4,
+	"delta_air": 5
 }
 
 # Only H2O and O2 in use for testing

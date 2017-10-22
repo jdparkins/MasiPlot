@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+       <width>1274</width>
+       <height>750</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -313,7 +313,34 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="0">
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+           <item>
+               <widget class="QGroupBox" name="groupBox_3">
+                   <property name="title">
+                       <string>GroupBox</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_5">
+                       <item>
+                           <layout class="QGridLayout" name="gridLayout_3">
+                               <item row="1" column="0">
+                                   <widget class="QPushButton" name="exportCSVBtn">
+                                       <property name="text">
+                                           <string>Export as CSV</string>
+                                       </property>
+                                   </widget>
+                               </item>
+                               <item row="2" column="0">
+                                   <widget class="QPushButton" name="exportPNGBtn">
+                                       <property name="text">
+                                           <string>Export as PNG</string>
+                                       </property>
+                                   </widget>
+                               </item>
+                               <item row="0" column="0">
               <widget class="QPushButton" name="clearBtn">
                <property name="minimumSize">
                 <size>
